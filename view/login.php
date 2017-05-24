@@ -39,16 +39,19 @@
 $db = new Database();
 
 if(isset($_POST['submit'])){
-	
+
+	$db->query("SELECT * FROM user WHERE username= :username AND password= :password ");
+
 	$username = $_POST['username'];
 	$password = $_POST['password'];
 
-	$db->query("SELECT * FROM user WHERE username='$username' AND password='$password'");
+	$db->bind(':username', $username, $type = null);
+
+	$db->bind(':password', $password, $type = null);
 
 	$db->execute();
 
 	$count = $db->rowCount();
-
 	if($count == 1){
 		session_start();
 		$_SESSION['user'] = $username;

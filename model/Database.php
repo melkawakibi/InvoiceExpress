@@ -1,5 +1,5 @@
 <?php
-require '../config.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/../config.php';
 
 class Database{
 	
@@ -8,29 +8,29 @@ class Database{
 	private $pass = DB_PASS;
 	private $dbname = DB_NAME;
 
-	private $dbh;
+	private $db;
 	private $error;
 
 	private $stmt;
 
 	public function __construct(){
-		$dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname;
-		
+		$dsn = 'mysql:host=' . $this->host . ';port=3307;dbname=' . $this->dbname;
+
 		$option = array(
 			PDO::ATTR_PERSISTENT => true,
 			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 		);
 
 		try{
-			$this->dbh = new PDO($dsn, $this->user, $this->pass, $option); 
+			$this->db = new PDO($dsn, $this->user, $this->pass, $option);
 		}
 		catch(PDOException $e){
-			$this->error = $e->getMessage();
+			echo $this->error = $e->getMessage();
 		}
 	}
 
 	public function query($query){
-		$this->stmt = $this->dbh->prepare($query);
+		$this->stmt = $this->db->prepare($query);
 	}
 
 	public function bind($param, $value, $type = null){
@@ -54,8 +54,8 @@ class Database{
 		$this->stmt->bindValue($param, $value, $type);
 	}
 
-	public function execute(){
-		return $this->stmt->execute();
+	public function execute($params){
+		return $this->stmt->execute($params);
 	}
 
 	public function resultsest(){
